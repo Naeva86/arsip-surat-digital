@@ -1,2 +1,2 @@
 [deploy]
-startCommand = "php artisan config:clear && php artisan config:cache && php artisan migrate --force && php artisan db:seed --force && php artisan storage:link && vendor/bin/heroku-php-apache2 public/"
+startCommand = "echo '=== DEBUG ===' && echo DB_HOST=$DB_HOST && echo DB_DATABASE=$DB_DATABASE && echo DB_PORT=$DB_PORT && echo DATABASE_URL=$DATABASE_URL && echo '=== END DEBUG ===' && php artisan config:clear && php artisan config:cache && php artisan migrate --force && php artisan db:seed --force && php artisan storage:link && vendor/bin/heroku-php-apache2 public/"
