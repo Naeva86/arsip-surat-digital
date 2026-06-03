@@ -1,0 +1,10 @@
+{
+  "php": {
+    "extensions": [
+      "gd", "zip", "pdo_mysql", "ctype", "curl", "dom",
+      "fileinfo", "mbstring", "openssl", "pcre", "pdo",
+      "session", "tokenizer", "xml", "iconv", "simplexml",
+      "xmlreader", "xmlwriter", "zlib", "bcmath"
+    ]
+  }
+}
