@@ -1,2 +1,2 @@
 [deploy]
-startCommand = "echo ENV_FILE=$(test -f /app/.env && echo ADA || echo TIDAK_ADA) && echo DB_HOST=$DB_HOST && echo DB_DATABASE=$DB_DATABASE && php artisan config:clear && php artisan config:cache && php artisan migrate --force && php artisan db:seed --force && php artisan storage:link && vendor/bin/heroku-php-apache2 public/"
+startCommand = "chmod +x deploy.sh && bash deploy.sh"
