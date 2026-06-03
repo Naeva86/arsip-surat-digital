@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-gd": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "endroid/qr-code": "^5.1",
         "guzzlehttp/guzzle": "^7.2",
@@ -58,15 +59,17 @@
         }
     },
     "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "php-http/discovery": true
-        },
-            "audit": {
-            "block-insecure": false
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+        "pestphp/pest-plugin": true
+    },
+    "audit": {
+        "block-insecure": false
+    },
+        "platform": {
+            "php": "8.2.31"
         }
     },
     "minimum-stability": "stable",
