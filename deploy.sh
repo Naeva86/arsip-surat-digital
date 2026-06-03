@@ -1,15 +1,7 @@
 #!/bin/bash
-echo "=== DEPLOY SCRIPT ==="
-
-# Buat .env dari DATABASE_URL jika DB_HOST kosong
-if [ -z "$DB_HOST" ] && [ -n "$DATABASE_URL" ]; then
-    echo "DB vars empty, parsing from DATABASE_URL"
-    echo "DATABASE_URL=$DATABASE_URL" > /app/.env
-    echo "DB_CONNECTION=mysql" >> /app/.env
-    echo "APP_KEY=$APP_KEY" >> /app/.env
-    echo "APP_ENV=$APP_ENV" >> /app/.env
-    echo "APP_DEBUG=$APP_DEBUG" >> /app/.env
-fi
+echo "=== ALL ENV VARS ==="
+printenv | sort
+echo "=== END ALL ENV VARS ==="
 
 php artisan config:clear
 php artisan config:cache
