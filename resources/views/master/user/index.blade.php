@@ -35,14 +35,14 @@
             @endif
         </button>
 
-        {{-- Tambah --}}
+        {{-- Tambah — admin only --}}
+        @if(auth()->user()->role === 'admin')
         <a href="{{ route('master.user.create') }}"
-           class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
+        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Tambah
         </a>
+        @endif
     </div>
 </div>
 
@@ -222,144 +222,152 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Bagian</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Role</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                    @if(auth()->user()->role === 'admin')
                     <th class="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Aksi</th>
+                    @endif 
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                @forelse($users as $i => $u)
-                @php
-                    $roleColor = match($u->role) {
-                        'admin'    => 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-                        'direktur' => 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
-                        'kabag'    => 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400',
-                        'kasubbag' => 'bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
-                        default    => 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400',
-                    };
-                @endphp
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
-                    <td class="px-4 py-3 text-gray-400 text-xs">{{ $users->firstItem() + $i }}</td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-600">
-                                @if($u->foto)
-                                <img src="{{ Storage::url($u->foto) }}" alt="" class="w-full h-full object-cover">
-                                @else
-                                <div class="w-full h-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                                    <span class="text-xs font-bold text-blue-600">{{ strtoupper(substr($u->name, 0, 1)) }}</span>
-                                </div>
-                                @endif
+            @forelse($users as $i => $u)
+            @php
+                $roleColor = match($u->role) {
+                    'admin'    => 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
+                    'direktur' => 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+                    'kabag'    => 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400',
+                    'kasubbag' => 'bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
+                    default    => 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400',
+                };
+            @endphp
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
+                <td class="px-4 py-3 text-gray-400 text-xs">{{ $users->firstItem() + $i }}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-600">
+                            @if($u->foto)
+                            <img src="{{ Storage::url($u->foto) }}" alt="" class="w-full h-full object-cover">
+                            @else
+                            <div class="w-full h-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                <span class="text-xs font-bold text-blue-600">{{ strtoupper(substr($u->name, 0, 1)) }}</span>
                             </div>
-                            <div class="min-w-0">
-                                <p class="text-sm font-medium text-gray-800 dark:text-white truncate">{{ $u->name }}</p>
-                                <p class="text-xs text-gray-400 truncate">{{ $u->email }}</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{{ $u->nip ?? '-' }}</td>
-                    <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-300">{{ $u->jabatan->nama_jabatan ?? '-' }}</td>
-                    <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-300 max-w-[150px] truncate">{{ $u->bagian->nama_bagian ?? '-' }}</td>
-                    <td class="px-4 py-3">
-                        <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $roleColor }}">{{ ucfirst($u->role) }}</span>
-                    </td>
-                    <td class="px-4 py-3">
-                        @if($u->is_active)
-                        <span class="inline-flex items-center gap-1 text-xs text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aktif</span>
-                        @else
-                        <span class="inline-flex items-center gap-1 text-xs text-red-500"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Nonaktif</span>
-                        @endif
-                    </td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center justify-center gap-1">
-                            <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.remove('hidden')"
-                                    title="Detail" class="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </button>
-                            <a href="{{ route('master.user.edit', $u) }}" title="Edit" class="p-1.5 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            </a>
-                            @if($u->id !== auth()->id())
-                            <form action="{{ route('master.user.destroy', $u) }}" method="POST" class="inline"
-                                  data-konfirmasi data-tipe="hapus" data-judul="Hapus Pengguna?" data-pesan="Pengguna {{ $u->name }} akan dihapus." data-label-ok="Ya, Hapus">
-                                @csrf @method('DELETE')
-                                <button type="submit" title="Hapus" class="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </form>
                             @endif
                         </div>
-                    </td>
-                </tr>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-gray-800 dark:text-white truncate">{{ $u->name }}</p>
+                            <p class="text-xs text-gray-400 truncate">{{ $u->email }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{{ $u->nip ?? '-' }}</td>
+                <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-300">{{ $u->jabatan->nama_jabatan ?? '-' }}</td>
+                <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-300 max-w-[150px] truncate">{{ $u->bagian->nama_bagian ?? '-' }}</td>
+                <td class="px-4 py-3">
+                    <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $roleColor }}">{{ ucfirst($u->role) }}</span>
+                </td>
+                <td class="px-4 py-3">
+                    @if($u->is_active)
+                    <span class="inline-flex items-center gap-1 text-xs text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aktif</span>
+                    @else
+                    <span class="inline-flex items-center gap-1 text-xs text-red-500"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Nonaktif</span>
+                    @endif
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center justify-center gap-1">
+                        {{-- Detail — semua role --}}
+                        <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.remove('hidden')"
+                                title="Detail" class="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                        {{-- Edit & Hapus — admin only --}}
+                        @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('master.user.edit', $u) }}" title="Edit" class="p-1.5 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </a>
+                        @if($u->id !== auth()->id())
+                        <form action="{{ route('master.user.destroy', $u) }}" method="POST" class="inline"
+                            data-konfirmasi data-tipe="hapus" data-judul="Hapus Pengguna?" data-pesan="Pengguna {{ $u->name }} akan dihapus." data-label-ok="Ya, Hapus">
+                            @csrf @method('DELETE')
+                            <button type="submit" title="Hapus" class="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </form>
+                        @endif
+                        @endif
+                    </div>
+                </td>
+            </tr>
 
-                {{-- Modal Detail --}}
-                <tr>
-                    <td colspan="8" class="p-0 border-0">
-                        <div id="user-modal-{{ $u->id }}" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-                             onclick="if(event.target===this) this.classList.add('hidden')">
-                            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
-                                <div class="flex items-center justify-between px-6 py-4 border-b dark:border-gray-700 flex-shrink-0">
-                                    <h4 class="font-semibold text-gray-800 dark:text-white">Detail Pengguna</h4>
-                                    <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.add('hidden')"
-                                            class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    </button>
-                                </div>
-                                <div class="flex-1 overflow-y-auto px-6 py-5">
-                                    <div class="flex items-center gap-4 mb-6">
-                                        <div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-gray-200 dark:border-gray-600">
-                                            @if($u->foto)
-                                            <img src="{{ Storage::url($u->foto) }}" alt="" class="w-full h-full object-cover">
+            {{-- Modal Detail --}}
+            <tr class="hidden-row">
+                <td colspan="8" class="p-0 border-0">
+                    <div id="user-modal-{{ $u->id }}" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onclick="if(event.target===this) this.classList.add('hidden')">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+                            <div class="flex items-center justify-between px-6 py-4 border-b dark:border-gray-700 flex-shrink-0">
+                                <h4 class="font-semibold text-gray-800 dark:text-white">Detail Pengguna</h4>
+                                <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.add('hidden')"
+                                        class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            <div class="flex-1 overflow-y-auto px-6 py-5">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-gray-200 dark:border-gray-600">
+                                        @if($u->foto)
+                                        <img src="{{ Storage::url($u->foto) }}" alt="" class="w-full h-full object-cover">
+                                        @else
+                                        <div class="w-full h-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                                            <span class="text-xl font-bold text-blue-600">{{ strtoupper(substr($u->name, 0, 1)) }}</span>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-base font-semibold text-gray-800 dark:text-white">{{ $u->name }}</p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-xs px-2.5 py-0.5 rounded-full font-medium {{ $roleColor }}">{{ ucfirst($u->role) }}</span>
+                                            @if($u->is_active)
+                                            <span class="inline-flex items-center gap-1 text-xs text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aktif</span>
                                             @else
-                                            <div class="w-full h-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                                                <span class="text-xl font-bold text-blue-600">{{ strtoupper(substr($u->name, 0, 1)) }}</span>
-                                            </div>
+                                            <span class="inline-flex items-center gap-1 text-xs text-red-500"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Nonaktif</span>
                                             @endif
                                         </div>
-                                        <div>
-                                            <p class="text-base font-semibold text-gray-800 dark:text-white">{{ $u->name }}</p>
-                                            <div class="flex items-center gap-2 mt-1">
-                                                <span class="text-xs px-2.5 py-0.5 rounded-full font-medium {{ $roleColor }}">{{ ucfirst($u->role) }}</span>
-                                                @if($u->is_active)
-                                                <span class="inline-flex items-center gap-1 text-xs text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aktif</span>
-                                                @else
-                                                <span class="inline-flex items-center gap-1 text-xs text-red-500"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Nonaktif</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                                        <div><p class="text-xs text-gray-400 mb-0.5">NIP</p><p class="font-mono text-gray-700 dark:text-gray-300">{{ $u->nip ?? '-' }}</p></div>
-                                        <div><p class="text-xs text-gray-400 mb-0.5">Email</p><p class="text-gray-700 dark:text-gray-300 truncate">{{ $u->email }}</p></div>
-                                        <div><p class="text-xs text-gray-400 mb-0.5">Jabatan</p><p class="text-gray-700 dark:text-gray-300">{{ $u->jabatan->nama_jabatan ?? '-' }}</p></div>
-                                        <div><p class="text-xs text-gray-400 mb-0.5">Bagian</p><p class="text-gray-700 dark:text-gray-300">{{ $u->bagian->nama_bagian ?? '-' }}</p></div>
-                                        <div><p class="text-xs text-gray-400 mb-0.5">Terdaftar</p><p class="text-gray-700 dark:text-gray-300">{{ $u->created_at->format('d/m/Y H:i') }}</p></div>
-                                        <div><p class="text-xs text-gray-400 mb-0.5">Terakhir Update</p><p class="text-gray-700 dark:text-gray-300">{{ $u->updated_at->diffForHumans() }}</p></div>
                                     </div>
                                 </div>
-                                <div class="px-6 py-4 border-t dark:border-gray-700 flex gap-2 flex-shrink-0">
-                                    <a href="{{ route('master.user.edit', $u) }}" class="inline-flex items-center gap-2 text-sm bg-yellow-100 text-yellow-700 hover:bg-yellow-200 px-4 py-2 rounded-lg transition">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                        Edit
-                                    </a>
-                                    <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.add('hidden')"
-                                            class="text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white text-gray-700 px-4 py-2 rounded-lg transition ml-auto">Tutup</button>
+                                <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                                    <div><p class="text-xs text-gray-400 mb-0.5">NIP</p><p class="font-mono text-gray-700 dark:text-gray-300">{{ $u->nip ?? '-' }}</p></div>
+                                    <div><p class="text-xs text-gray-400 mb-0.5">Email</p><p class="text-gray-700 dark:text-gray-300 truncate">{{ $u->email }}</p></div>
+                                    <div><p class="text-xs text-gray-400 mb-0.5">Jabatan</p><p class="text-gray-700 dark:text-gray-300">{{ $u->jabatan->nama_jabatan ?? '-' }}</p></div>
+                                    <div><p class="text-xs text-gray-400 mb-0.5">Bagian</p><p class="text-gray-700 dark:text-gray-300">{{ $u->bagian->nama_bagian ?? '-' }}</p></div>
+                                    <div><p class="text-xs text-gray-400 mb-0.5">Terdaftar</p><p class="text-gray-700 dark:text-gray-300">{{ $u->created_at->format('d/m/Y H:i') }}</p></div>
+                                    <div><p class="text-xs text-gray-400 mb-0.5">Terakhir Update</p><p class="text-gray-700 dark:text-gray-300">{{ $u->updated_at->diffForHumans() }}</p></div>
                                 </div>
                             </div>
+                            <div class="px-6 py-4 border-t dark:border-gray-700 flex gap-2 flex-shrink-0">
+                                @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('master.user.edit', $u) }}" class="inline-flex items-center gap-2 text-sm bg-yellow-100 text-yellow-700 hover:bg-yellow-200 px-4 py-2 rounded-lg transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    Edit
+                                </a>
+                                @endif
+                                <button onclick="document.getElementById('user-modal-{{ $u->id }}').classList.add('hidden')"
+                                        class="text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white text-gray-700 px-4 py-2 rounded-lg transition ml-auto">Tutup</button>
+                            </div>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
 
-                @empty
-                <tr>
-                    <td colspan="8" class="px-6 py-16 text-center text-gray-400">
-                        <svg class="w-10 h-10 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <p class="text-sm">Tidak ada pengguna ditemukan</p>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
+            @empty
+            <tr>
+                <td colspan="8" class="px-6 py-16 text-center text-gray-400">
+                    <svg class="w-10 h-10 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <p class="text-sm">Tidak ada pengguna ditemukan</p>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
         </table>
     </div>
     @if($users->hasPages())

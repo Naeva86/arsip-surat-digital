@@ -7,13 +7,19 @@ use Illuminate\Http\Request;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string ...$roles): mixed
+    public function handle(Request $request, Closure $next, ...$roles): mixed
     {
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
-        if (!in_array(auth()->user()->role, $roles)) {
+        // Support comma-separated dan multiple params
+        $allowedRoles = [];
+        foreach ($roles as $role) {
+            $allowedRoles = array_merge($allowedRoles, explode(',', $role));
+        }
+
+        if (!in_array(auth()->user()->role, $allowedRoles)) {
             abort(403, 'Akses ditolak.');
         }
 

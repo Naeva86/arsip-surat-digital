@@ -68,22 +68,30 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/{disposisi}/tandai-selesai', [DisposisiController::class, 'tandaiSelesai'])->name('tandai-selesai');
     Route::get('/{disposisi}/cetak',       [DisposisiController::class, 'cetak'])->name('cetak');
     Route::get('/tracking/{suratMasuk}',   [DisposisiController::class, 'tracking'])->name('tracking');
-});
-Route::get('/verifikasi/disposisi/{id}', function ($id, \Illuminate\Http\Request $request) {
-    $disposisi = \App\Models\Disposisi::with(['suratMasuk', 'dariUser.jabatan', 'kepadaUser.jabatan'])->find($id);
+    });
+    Route::get('/verifikasi/disposisi/{id}', function ($id, \Illuminate\Http\Request $request) {
+        $disposisi = \App\Models\Disposisi::with(['suratMasuk', 'dariUser.jabatan', 'kepadaUser.jabatan'])->find($id);
 
-    if (!$disposisi) {
-        return response('<h2>❌ Disposisi tidak ditemukan</h2>', 404);
-    }
+        if (!$disposisi) {
+            return response('<h2>❌ Disposisi tidak ditemukan</h2>', 404);
+        }
 
-    $expectedHash = md5($disposisi->id . $disposisi->suratMasuk->no_agenda . $disposisi->created_at);
+        $expectedHash = md5($disposisi->id . $disposisi->suratMasuk->no_agenda . $disposisi->created_at);
 
-    if ($request->hash !== $expectedHash) {
-        return response('<h2>❌ Hash tidak valid — dokumen mungkin dipalsukan</h2>', 403);
-    }
+        if ($request->hash !== $expectedHash) {
+            return response('<h2>❌ Hash tidak valid — dokumen mungkin dipalsukan</h2>', 403);
+        }
 
-    return response()->view('verifikasi.disposisi', compact('disposisi'));
-})->name('verifikasi.disposisi');
-});
+        return response()->view('verifikasi.disposisi', compact('disposisi'));
+    })->name('verifikasi.disposisi');
+    Route::middleware(['role:admin,direktur'])->group(function () {
+    Route::get('master/user', [\App\Http\Controllers\Master\UserController::class, 'index'])->name('master.user.index');
+    Route::get('master/user/{user}', [\App\Http\Controllers\Master\UserController::class, 'show'])->name('master.user.show');
+    });
+    Route::middleware(['role:admin'])->prefix('master')->name('master.')->group(function () {
+    // ... bagian, jabatan, kategori ...
+    Route::resource('user', \App\Http\Controllers\Master\UserController::class)->except(['index', 'show']);
+    });
+    });
 
 require __DIR__ . '/auth.php';
