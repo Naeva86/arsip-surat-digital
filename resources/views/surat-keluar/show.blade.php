@@ -44,10 +44,6 @@
                 <p>{{ $suratKeluar->kategori->nama_kategori ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-gray-400 text-xs mb-0.5">Bagian</p>
-                <p>{{ $suratKeluar->bagian->nama_bagian ?? '-' }}</p>
-            </div>
-            <div>
                 <p class="text-gray-400 text-xs mb-0.5">Dibuat Oleh</p>
                 <p>{{ $suratKeluar->user->name }}</p>
             </div>

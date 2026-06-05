@@ -85,7 +85,7 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-white">Tanggal & Klasifikasi</h3>
-                    <p class="text-xs text-gray-400">Tanggal, sifat, kategori, dan bagian</p>
+                    <p class="text-xs text-gray-400">Tanggal, sifat, dan kategori</p>
                 </div>
             </div>
 
@@ -138,16 +138,6 @@
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($kategoris as $k)
                             <option value="{{ $k->id }}" {{ old('kategori_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kategori }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Bagian</label>
-                        <select name="bagian_id"
-                                class="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                            <option value="">-- Pilih Bagian --</option>
-                            @foreach($bagians as $b)
-                            <option value="{{ $b->id }}" {{ old('bagian_id') == $b->id ? 'selected' : '' }}>{{ $b->nama_bagian }}</option>
                             @endforeach
                         </select>
                     </div>

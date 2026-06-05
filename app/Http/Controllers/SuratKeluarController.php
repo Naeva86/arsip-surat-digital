@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SuratKeluar;
 use App\Models\KategoriSurat;
-use App\Models\Bagian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +11,7 @@ class SuratKeluarController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SuratKeluar::with(['user', 'kategori', 'bagian'])->latest();
+        $query = SuratKeluar::with(['user', 'kategori'])->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -48,8 +47,7 @@ class SuratKeluarController extends Controller
     public function create()
     {
         $kategoris = KategoriSurat::orderBy('nama_kategori')->get();
-        $bagians   = Bagian::orderBy('urutan')->get();
-        return view('surat-keluar.create', compact('kategoris', 'bagians'));
+        return view('surat-keluar.create', compact('kategoris'));
     }
 
     public function store(Request $request)
@@ -62,7 +60,6 @@ class SuratKeluarController extends Controller
             'tanggal_arsip' => 'required|date',
             'sifat'         => 'required|in:biasa,penting,rahasia',
             'kategori_id'   => 'nullable|exists:kategori_surats,id',
-            'bagian_id'     => 'nullable|exists:bagians,id',
             'keterangan'    => 'nullable|string',
             'file_path'     => 'nullable|file|mimes:pdf|max:10240',
         ]);
@@ -70,7 +67,7 @@ class SuratKeluarController extends Controller
         $data = $request->only([
             'nomor_surat', 'judul_surat', 'penerima',
             'tanggal_surat', 'tanggal_arsip', 'sifat',
-            'kategori_id', 'bagian_id', 'keterangan',
+            'kategori_id', 'keterangan',
         ]);
 
         $data['user_id'] = auth()->id();
@@ -88,15 +85,14 @@ class SuratKeluarController extends Controller
 
     public function show(SuratKeluar $suratKeluar)
     {
-        $suratKeluar->load(['user', 'kategori', 'bagian']);
+        $suratKeluar->load(['user', 'kategori']);
         return view('surat-keluar.show', compact('suratKeluar'));
     }
 
     public function edit(SuratKeluar $suratKeluar)
     {
         $kategoris = KategoriSurat::orderBy('nama_kategori')->get();
-        $bagians   = Bagian::orderBy('urutan')->get();
-        return view('surat-keluar.edit', compact('suratKeluar', 'kategoris', 'bagians'));
+        return view('surat-keluar.edit', compact('suratKeluar', 'kategoris'));
     }
 
     public function update(Request $request, SuratKeluar $suratKeluar)
@@ -109,7 +105,6 @@ class SuratKeluarController extends Controller
             'tanggal_arsip' => 'required|date',
             'sifat'         => 'required|in:biasa,penting,rahasia',
             'kategori_id'   => 'nullable|exists:kategori_surats,id',
-            'bagian_id'     => 'nullable|exists:bagians,id',
             'keterangan'    => 'nullable|string',
             'file_path'     => 'nullable|file|mimes:pdf|max:10240',
         ]);
@@ -117,7 +112,7 @@ class SuratKeluarController extends Controller
         $data = $request->only([
             'nomor_surat', 'judul_surat', 'penerima',
             'tanggal_surat', 'tanggal_arsip', 'sifat',
-            'kategori_id', 'bagian_id', 'keterangan',
+            'kategori_id', 'keterangan',
         ]);
 
         if ($request->hasFile('file_path')) {
