@@ -295,12 +295,10 @@
                     <p class="text-xs text-gray-400 mb-0.5">Diinput Oleh</p>
                     <p class="text-gray-700 dark:text-gray-300">{{ $suratMasuk->user->name ?? '-' }}</p>
                 </div>
-                @if($suratMasuk->keterangan)
                 <div class="col-span-2">
                     <p class="text-xs text-gray-400 mb-0.5">Keterangan</p>
                     <p class="text-gray-700 dark:text-gray-300">{{ $suratMasuk->keterangan }}</p>
                 </div>
-                @endif
             </div>
         </div>
 

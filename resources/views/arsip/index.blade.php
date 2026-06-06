@@ -183,12 +183,10 @@
                                             <p class="text-xs text-gray-400 mb-0.5">Diinput Oleh</p>
                                             <p class="text-gray-700 dark:text-gray-300">{{ $surat->user->name ?? '-' }}</p>
                                         </div>
-                                        @if($surat->keterangan)
                                         <div class="col-span-2">
                                             <p class="text-xs text-gray-400 mb-0.5">Keterangan</p>
                                             <p class="text-gray-700 dark:text-gray-300">{{ $surat->keterangan }}</p>
                                         </div>
-                                        @endif
                                     </div>
 
                                     {{-- Ringkasan Disposisi --}}
@@ -403,19 +401,13 @@
                                             <p class="text-gray-700 dark:text-gray-300">{{ $surat->kategori->nama_kategori ?? '-' }}</p>
                                         </div>
                                         <div>
-                                            <p class="text-xs text-gray-400 mb-0.5">Bagian</p>
-                                            <p class="text-gray-700 dark:text-gray-300">{{ $surat->bagian->nama_bagian ?? '-' }}</p>
-                                        </div>
-                                        <div>
                                             <p class="text-xs text-gray-400 mb-0.5">Dibuat Oleh</p>
                                             <p class="text-gray-700 dark:text-gray-300">{{ $surat->user->name ?? '-' }}</p>
                                         </div>
-                                        @if($surat->keterangan)
                                         <div class="col-span-2">
                                             <p class="text-xs text-gray-400 mb-0.5">Keterangan</p>
                                             <p class="text-gray-700 dark:text-gray-300">{{ $surat->keterangan }}</p>
                                         </div>
-                                        @endif
                                     </div>
                                 </div>
 
