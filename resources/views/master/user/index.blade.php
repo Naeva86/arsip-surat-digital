@@ -417,6 +417,22 @@ document.querySelectorAll('.filter-radio-label input[type="radio"]').forEach(fun
     .filter-slide.filter-open {
         transform: translateX(0%);
     }
+    @media (max-width: 768px) {
+    /* User widget role: 2 kolom */
+    .grid.grid-cols-5.gap-3 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* User stat: full width */
+    .grid.grid-cols-3.gap-3.mb-3 > div {
+        min-width: 0;
+    }
+
+    /* Profil dropdown visible di mobile */
+    #profil-wrapper {
+        display: block !important;
+    }
+}
 </style>
 
 @endsection

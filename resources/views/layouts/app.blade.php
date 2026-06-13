@@ -169,6 +169,87 @@
                 display: flex !important;
             }
         }
+        /* ═══ RESPONSIVE GLOBAL ═══ */
+
+        /* Header halaman: stack di mobile */
+        @media (max-width: 768px) {
+            .flex.items-center.justify-between.mb-5 {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .flex.items-center.justify-between.mb-5 > .flex.items-center.gap-2 {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            /* Search bar full width di mobile */
+            .flex.items-center.gap-2 input[type="text"][name="search"] {
+                width: 100% !important;
+                min-width: 0;
+            }
+            .flex.items-center.gap-2 form.relative {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            /* Widget stat cards: 2 kolom di mobile */
+            .grid.grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid.grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid.grid-cols-5 > *:last-child {
+                grid-column: span 2;
+            }
+
+            /* Tabel: scroll horizontal */
+            .overflow-x-auto {
+                -webkit-overflow-scrolling: touch;
+            }
+            table {
+                min-width: 700px;
+            }
+
+            /* Filter pills wrap */
+            .flex.flex-wrap.items-center.gap-2.mb-4 {
+                gap: 6px;
+            }
+
+            /* Modal lebih kecil di mobile */
+            .max-w-lg {
+                max-width: 95vw;
+            }
+
+            /* Pagination compact */
+            nav.flex.items-center.justify-between {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (min-width: 769px) and (max-width: 1023px) {
+            .grid.grid-cols-5 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Card bagian: stack di mobile */
+        @media (max-width: 640px) {
+            .grid.grid-cols-2.md\\:grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            /* Tombol aksi lebih compact */
+            .flex.items-center.justify-center.gap-1 {
+                gap: 0;
+            }
+            .flex.items-center.justify-center.gap-1 .p-1\\.5 {
+                padding: 4px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 font-sans antialiased h-full">
@@ -675,7 +756,7 @@
             @endif
 
             {{-- Page Content --}}
-            <main class="flex-1 overflow-y-auto content-scroll p-6 min-h-0">
+            <main class="flex-1 overflow-y-auto content-scroll p-4 lg:p-6 min-h-0">
                 @yield('content')
             </main>
 
